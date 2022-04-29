@@ -33,6 +33,11 @@
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
+    <integer name="subTypeSelect" title="SubType"
+      selection="account.analytic.move.line.sub.type.select" required="true" default="1"/>
+    <many-to-one name="originAnalyticMoveLine"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine"/>
+
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
 
     <extra-code><![CDATA[
