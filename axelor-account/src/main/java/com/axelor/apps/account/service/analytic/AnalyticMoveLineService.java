@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -34,6 +35,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AnalyticMoveLineService {
+
+  public AnalyticMoveLineRepository getAnalyticMoveLineRepository();
+
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
   public List<AnalyticMoveLine> generateLines(
@@ -59,4 +63,11 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine computeAnalyticMoveLine(
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
+
+  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine);
+
+  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+
+  AnalyticMoveLine reverseAndPersist(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 }

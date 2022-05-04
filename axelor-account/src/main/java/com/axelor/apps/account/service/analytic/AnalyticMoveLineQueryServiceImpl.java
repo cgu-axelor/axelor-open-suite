@@ -17,16 +17,32 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
+
+  AnalyticMoveLineService analyticMoveLineService;
+
+  @Inject
+  public AnalyticMoveLineQueryServiceImpl(AnalyticMoveLineService analyticMoveLineService) {
+    this.analyticMoveLineService = analyticMoveLineService;
+  }
 
   @Override
   public String getAnalyticMoveLineQuery(AnalyticMoveLineQuery analyticMoveLineQuery) {
@@ -120,5 +136,44 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       }
     }
     return query;
+  }
+
+  @Override
+  public Set<AnalyticMoveLine> analyticMoveLineReverses(
+      AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines) {
+
+    Map<AnalyticAxis, AnalyticAccount> reverseRules =
+        analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList().stream()
+            .collect(
+                Collectors.toMap(
+                    AnalyticMoveLineQueryParameter::getAnalyticAxis,
+                    AnalyticMoveLineQueryParameter::getAnalyticAccount));
+
+    Set<AnalyticMoveLine> reverseAnalyticMoveLines = new HashSet<AnalyticMoveLine>();
+    for (AnalyticAxis analyticAxis : reverseRules.keySet()) {
+      AnalyticAccount analyticAccount = reverseRules.get(analyticAxis);
+      List<AnalyticMoveLine> analyticMoveLinesToReverse =
+          analyticMoveLines.stream()
+              .filter(
+                  analyticMoveLine ->
+                      Objects.equals(analyticMoveLine.getAnalyticAxis(), analyticAxis))
+              .collect(Collectors.toList());
+
+      reverseAnalyticMoveLines.addAll(
+          analyticMoveLineReverses(analyticAccount, analyticMoveLinesToReverse));
+    }
+
+    return reverseAnalyticMoveLines;
+  }
+
+  @Transactional
+  protected Set<AnalyticMoveLine> analyticMoveLineReverses(
+      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLines) {
+
+    return analyticMoveLines.stream()
+        .map(
+            analyticMoveLine ->
+                analyticMoveLineService.reverseAndPersist(analyticMoveLine, analyticAccount))
+        .collect(Collectors.toSet());
   }
 }

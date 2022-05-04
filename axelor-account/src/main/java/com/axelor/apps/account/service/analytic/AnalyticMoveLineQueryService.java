@@ -17,9 +17,15 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import java.util.List;
+import java.util.Set;
 
 public interface AnalyticMoveLineQueryService {
 
   public String getAnalyticMoveLineQuery(AnalyticMoveLineQuery analyticMoveLineQuery);
+
+  public Set<AnalyticMoveLine> analyticMoveLineReverses(
+      AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines);
 }

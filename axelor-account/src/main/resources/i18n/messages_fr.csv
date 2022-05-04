@@ -162,6 +162,7 @@
 "%s : You must configure shit to irrecoverable sequence for the company %s","%s : Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",,
 "%s account not found in move %s","Compte %s non trouvé dans le mouvement %s",,
 "%s has not exaclty the same internal companies as %s.","%s n'a pas exactement les mêmes sociétés internes que %s",,
+"%s analytical entries have been reversed","%s écriture(s) analytique(s) ont été extournée(s)",,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)","(Débit %s compte %s montant %s - Crédit %s compte %s montant %s)",,
 "* %s Account(s) situation(s) treated","* %s Compte(s) de situation(s) traité(s)",,
 "* %s Invoice(s) treated","* %s Facture(s) traitée(s)",,

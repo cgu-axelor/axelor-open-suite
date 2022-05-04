@@ -47,6 +47,11 @@
 		public static final int STATUS_FORECAST_INVOICE = 2;
 		public static final int STATUS_REAL_ACCOUNTING = 3;
 
+	   	// SUB TYPE SELECT
+		public static final int SUB_TYPE_ORIGINAL = 1;
+		public static final int SUB_TYPE_REVERSE = 2;
+		public static final int SUB_TYPE_REVISION = 3;
+
 	]]></extra-code>
 
     <track>

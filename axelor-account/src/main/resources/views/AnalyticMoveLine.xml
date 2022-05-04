@@ -274,6 +274,14 @@
 
   <grid model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines"
     name="analytic-move-line-to-process-grid" x-selector="checkbox">
+    <toolbar>
+      <button name="ReverseSelectedAnalyticLinesBtn" title="Reverse selected lines"
+        onClick="action-analytic-move-line-query-method-selected-reverse"
+        readonlyIf="__analyticMoveLineList[0] == 0" css="btn-primary"/>
+      <button name="ReverseAllSearchedAnalyticLinesBtn" title="Reverse all retrieved lines"
+        onClick="action-analytic-move-line-query-method-all-reverse"
+        readonlyIf="__analyticMoveLineList[0] == 0" css="btn-primary"/>
+    </toolbar>
     <hilite if="typeSelect == 1" color="warning"/>
     <hilite if="typeSelect == 2" color="info"/>
     <hilite if="typeSelect == 3" color="success"/>
@@ -300,7 +308,7 @@
     <view type="form" name="analytic-move-line-form"/>
     <domain>self.id in (:analyticMoveLineList)</domain>
     <context name="analyticMoveLineList"
-      expr="eval: analyticMoveLineList ? analyticMoveLineList : [0]"/>
+      expr="eval: __analyticMoveLineList ? __analyticMoveLineList : [0]"/>
   </action-view>
 
 </object-views>

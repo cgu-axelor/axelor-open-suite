@@ -161,6 +161,7 @@
 "%s : You must configure an supplier advance payment account for the company %s",,,
 "%s : You must configure shit to irrecoverable sequence for the company %s",,,
 "%s account not found in move %s",,,
+"%s analytical entries have been reversed",,,
 "%s has not exaclty the same internal companies as %s.",,,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)",,,
 "* %s Account(s) situation(s) treated",,,

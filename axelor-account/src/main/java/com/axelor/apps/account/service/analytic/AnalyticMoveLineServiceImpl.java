@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -44,9 +45,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
@@ -54,15 +57,21 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Inject
   public AnalyticMoveLineServiceImpl(
+      AnalyticMoveLineRepository analyticMoveLineRepository,
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
       AccountRepository accountRepository) {
 
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+  }
+
+  public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
+    return this.analyticMoveLineRepository;
   }
 
   @Override
@@ -243,5 +252,35 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
     return analyticMoveLine;
+  }
+
+  @Override
+  public AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine) {
+    return reverse(analyticMoveLine, null);
+  }
+
+  @Override
+  public AnalyticMoveLine reverse(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+
+    MoveLine moveLine = analyticMoveLine.getMoveLine();
+    AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
+    reverse.setOriginAnalyticMoveLine(analyticMoveLine);
+    moveLine.addAnalyticMoveLineListItem(reverse);
+    reverse.setAmount(analyticMoveLine.getAmount().negate());
+    reverse.setPercentage(analyticMoveLine.getPercentage().negate());
+    reverse.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVERSE);
+    if (Objects.nonNull(analyticAccount)) {
+      reverse.setAnalyticAccount(analyticAccount);
+    }
+
+    return reverse;
+  }
+
+  @Override
+  @Transactional
+  public AnalyticMoveLine reverseAndPersist(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+    return analyticMoveLineRepository.save(reverse(analyticMoveLine, analyticAccount));
   }
 }

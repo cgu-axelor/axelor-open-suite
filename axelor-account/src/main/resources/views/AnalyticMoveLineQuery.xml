@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="analytic-move-line-query-grid" title="Analytic move line search/reverse"
+  <grid name="analytic-move-line-query-grid" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
     <field name="company"/>
     <field name="tradingName"/>
@@ -13,10 +13,10 @@
       onClick="save,action-analytic-move-line-query-method-show-filtered-lines" icon="fa-search"/>
   </grid>
 
-  <form name="analytic-move-line-query-form" title="Analytic move line search/reverse"
+  <form name="analytic-move-line-query-form" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery"
     onNew="action-analytic-move-line-query-group-on-new"
-    onLoad="action-analytic-move-line-query-origin-select-domain">
+    onLoad="action-analytic-move-line-query-origin-select-domain" width="large">
     <panel name="mainPanel">
       <field name="company" form-view="company-form" grid-view="company-grid"
         onSelect="action-analytic-move-line-query-attrs-set-company-domain"
@@ -32,41 +32,40 @@
       <field name="searchOperatorSelect"/>
       <field name="specificOriginSelect" hideIf="$popup()"/>
 
-      <separator colSpan="12"/>
-      <field name="searchAnalyticMoveLineQueryParameterList"
-        readonlyIf="!company || !fromDate || !toDate" colSpan="12">
-        <editor x-show-on-new="false"
-          onNew="action-analytic-move-line-query-parameter-record-search-on-new">
-          <field name="analyticAxis" grid-view="analytic-axis-grid"
-            form-view="analytic-axis-form" onSelect="action-attrs-domain-axis-distribution-line"/>
-          <field name="analyticAccountSet" grid-view="analytic-account-grid"
-            form-view="analytic-account-info-form"
-            onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
-        </editor>
-      </field>
+      <panel title="Move line search criterias" colSpan="12">
+        <field name="searchAnalyticMoveLineQueryParameterList"
+          readonlyIf="!company || !fromDate || !toDate" colSpan="12">
+          <editor x-show-on-new="false"
+            onNew="action-analytic-move-line-query-parameter-record-search-on-new">
+            <field name="analyticAxis" grid-view="analytic-axis-grid"
+              form-view="analytic-axis-form" onSelect="action-attrs-domain-axis-distribution-line"/>
+            <field name="analyticAccountSet" grid-view="analytic-account-grid"
+              form-view="analytic-account-info-form"
+              onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
+          </editor>
+        </field>
+      </panel>
 
-      <separator colSpan="12"/>
-      <field name="reverseAnalyticMoveLineQueryParameterList"
-        readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12">
-        <editor x-show-on-new="false"
-          onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
-          <field name="analyticAxis" grid-view="analytic-axis-grid"
-            form-view="analytic-axis-form" onSelect="action-attrs-domain-axis-distribution-line"/>
-          <field name="analyticAccount" grid-view="analytic-account-grid"
-            form-view="analytic-account-info-form"
-            onSelect="action-attrs-domain-account-distribution-line"/>
-        </editor>
-      </field>
+      <panel title="Move line reverse values" colSpan="12">
+        <field name="reverseAnalyticMoveLineQueryParameterList"
+          readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
+          showTitle="false">
+          <editor x-show-on-new="false"
+            onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
+            <field name="analyticAxis" grid-view="analytic-axis-grid"
+              form-view="analytic-axis-form" onSelect="action-attrs-domain-axis-distribution-line"/>
+            <field name="analyticAccount" grid-view="analytic-account-grid"
+              form-view="analytic-account-info-form"
+              onSelect="action-attrs-domain-account-distribution-line"/>
+          </editor>
+        </field>
+      </panel>
     </panel>
 
     <panel name="btnPanel" itemSpan="4">
       <button name="filterAnalyticMoveLineBtn" title="Filter analytic move lines"
         onClick="save,action-analytic-move-line-query-method-show-filtered-lines"
         readonlyIf="!company || !fromDate || !toDate || !searchAnalyticMoveLineQueryParameterList.length"/>
-      <button name="ReverseSelectedAnalyticLinesBtn" title="Reverse selected lines"
-        onClick="a" readonlyIf="!analyticMoveLineList.length"/>
-      <button name="ReverseAllSearchedAnalyticLinesBtn" title="Reverse all retrieved lines"
-        onClick="a" readonlyIf="!analyticMoveLineList.length"/>
     </panel>
 
     <panel-dashlet name="filteredAnalyticmoveLinesDashlet"
@@ -115,6 +114,21 @@
   <action-method name="action-analytic-move-line-query-method-show-filtered-lines">
     <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
       method="filterAnalyticMoveLines"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-query-method-show-filtered-lines">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="filterAnalyticMoveLines"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-query-method-selected-reverse">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="selectedReverse"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-query-method-all-reverse">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="allReverse"/>
   </action-method>
 
 </object-views>
